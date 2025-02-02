@@ -3,28 +3,43 @@ from math import sqrt, pi, exp
 from NumericalMethods import GPDF, Simpson, Probability
 #endregion
 
-#region function definitions
 def main():
     """
-    I want to integrate the Gaussian probability density function between
-    a left hand limit = (mean - 5*stDev) to a right hand limit = (c).  Here
-    is my step-by-step plan:
-    1. Decide mean, stDev, and c and if I want P(x>c) or P(x<c).
-    2. Define args tuple and c to be passed to Probability
-    3. Pass args, and a callback function (GPDF) to Probability
-    4. In probability, pass along GPDF to Simpson along with the appropriate args tuple
-    5. Return the required probability from Probability and print to screen.
-    :return: Nothing to return, just print results to screen.
+    Demonstrates the Probability(...) function:
+      1) Prompt user for mean, stDev, and c.
+      2) Ask whether we want P(x>c) or P(x<c).
+      3) Compute Probability using our Probability() function from NumericalMethods.
+      4) Print the result.
+
+    We can also illustrate the specific homework examples:
+      P(x < 105 | N(100, 12.5))
+      P(x > 100 + 2*3 | N(100, 3)) => P(x > 106)
     """
-    #region testing user input
-    # The following code solicites user input through the CLI.
-    mean = input("Population mean? ")
-    stDev = input("Standard deviation?")
-    c = input("c value?")
-    GT = True if input("Probability greater than c?").lower() in ["y","yes","true"] else "False"
-    print("P(x"+(">" if GT else "<") + c +"|"+mean+", "+stDev +")")
-    #endregion
-#endregion
+    # Example: direct usage (no user input):
+    p1 = Probability(GPDF, (100, 12.5), 105, GT=False)
+    p2 = Probability(GPDF, (100, 3), 106, GT=True)
+
+    print(f"P(x<105|N(100,12.5))={p1:.4f}")
+    print(f"P(x>106|N(100,3))={p2:.4f}")
+
+    print("\nNow, a user-driven example...\n")
+    mean_str = input("Population mean? ")
+    stdev_str = input("Standard deviation? ")
+    c_str = input("c value? ")
+    gt_str = input("Probability greater than c? (y/n): ").lower()
+
+    # Convert strings to numerical types
+    mean = float(mean_str)
+    stDev = float(stdev_str)
+    c = float(c_str)
+    GT = (gt_str in ["y","yes","true"])
+
+    prob = Probability(GPDF, (mean, stDev), c, GT)
+    # Print result
+    if GT:
+        print(f"P(x>{c}|N({mean},{stDev}))={prob:.6f}")
+    else:
+        print(f"P(x<{c}|N({mean},{stDev}))={prob:.6f}")
 
 if __name__ == "__main__":
     main()
